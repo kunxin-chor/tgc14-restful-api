@@ -91,9 +91,35 @@ async function main() {
                 'error':"We have encountered an internal server error"
             })         
         }
-
-
     })
+
+    app.put('/sighting/:id', async(req,res)=>{
+        // assume that we are replacing the document
+        let description = req.body.description;
+        let food = req.body.food;
+        let datetime = req.body.datetime ? new Date(req.body.datetime) : new Date();
+
+        let db = MongoUtil.getDB();
+        let results = await db.collection('sightings').updateOne({
+            '_id': ObjectId(req.params.id)
+        },{
+            '$set':{
+                description, food, datetime
+            }
+        })
+        res.status(200);
+        res.send(results)
+    })
+
+    app.delete('/sighting/:id', async(req,res) => {
+        let db = MongoUtil.getDB();
+        let results = await db.collection('sightings').remove({
+            '_id': ObjectId(req.params.id)
+        })
+        res.status(200);
+        res.send(results);
+    })
+
 
 }
 
