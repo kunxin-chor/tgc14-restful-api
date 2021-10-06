@@ -49,12 +49,51 @@ async function main() {
         } catch (e) {
             res.status(500);
             res.json({
-                'error':"We have encountered an interal server error. Please contact admin"
+                'error': "We have encountered an interal server error. Please contact admin"
             });
             console.log(e);
         }
     })
 
+    app.get('/sightings', async (req, res) => {
+
+        try {
+            let db = MongoUtil.getDB();
+
+            // start with an empty critera object
+            let criteria = {};
+
+            // we fill in the critera depending on whether specific
+            // query string keys are provided
+
+            // if the `description` key exists in req.query
+            if (req.query.description) {
+                criteria['description'] = {
+                    '$regex': req.query.description,
+                    '$options': 'i'
+                }
+            }
+
+            if (req.query.food) {
+                criteria['food'] = {
+                    '$in': [req.query.food]
+                }
+            }
+
+            // console.log(criteria)
+
+            let sightings = await db.collection('sightings').find(criteria).toArray();
+            res.status(200);
+            res.send(sightings);
+        } catch (e) {
+            res.status(500);
+            res.send({
+                'error':"We have encountered an internal server error"
+            })         
+        }
+
+
+    })
 
 }
 
