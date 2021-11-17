@@ -93,6 +93,14 @@ async function main() {
         }
     })
 
+    app.get('/sighting/:id', async(req,res)=>{
+        let db = MongoUtil.getDB();
+        let sighting = await db.collection('sightings').findOne({
+            '_id':ObjectId(req.params.id)
+        });
+        res.send(sighting);
+    })
+
     app.put('/sighting/:id', async(req,res)=>{
         // assume that we are replacing the document
         let description = req.body.description;
