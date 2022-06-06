@@ -27,6 +27,12 @@ The JSON object returns by the endpoint follow the structure below:
 }
 ```
 
+## Get a sighting by id
+```
+GET /sightings/<id>
+```
+Returns a sighting document by its id
+
 ## Create a new sighting
 ```
 POST /sighting
